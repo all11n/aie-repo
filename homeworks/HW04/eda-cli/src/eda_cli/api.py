@@ -162,27 +162,65 @@ def quality(req: QualityRequest) -> QualityResponse:
 
 
 # ---------- /quality-from-csv: реальный CSV через нашу EDA-логику ----------
+
+
 @app.post(
     "/quality-flags-from-csv",
     response_model=dict,
     tags=["quality"],
     summary="Вывод эвристик качества по CSV-файлу с использованием EDA-ядра"
 )
-async def quality_from_csv(file: UploadFile = File(...)) -> QualityResponse:
-    df = pd.read_csv(file.file)
+async def quality_flags_from_csv(file: UploadFile = File(...)) -> dict:
+
+    if file.content_type not in ("text/csv", "application/vnd.ms-excel", "application/octet-stream"):
+        raise HTTPException(
+            status_code=400, 
+            detail="Ожидается CSV-файл. Получен тип: " + file.content_type
+        )
+
+    if not file.filename or not file.filename.endswith('.csv'):
+        raise HTTPException(
+            status_code=400, 
+            detail="Ожидается файл с расширением .csv"
+        )
+
+    try:
+        df = pd.read_csv(file.file)
+    except pd.errors.EmptyDataError:
+        raise HTTPException(
+            status_code=400, 
+            detail="CSV-файл пуст или не содержит данных"
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Не удалось прочитать CSV файл: {str(exc)}"
+        )
+  
+    if df.empty:
+        raise HTTPException(
+            status_code=400, 
+            detail="CSV-файл не содержит данных (пустой DataFrame)"
+        )
+ 
+    if df.shape[0] == 0 or df.shape[1] == 0:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"CSV-файл имеет некорректные размеры: {df.shape}"
+        )
+    
     summary = summarize_dataset(df)
     missing_df = missing_table(df)
     flags_all = compute_quality_flags(summary, missing_df)
     
     print(f"[quality-flags-from-csv] filename={file.filename!r} flags_all={flags_all}")
 
-    return {
-        "flags": flags_all
-    }
-    
+    return {"flags": flags_all}
+
+
 @app.post(
     "/quality-from-csv",
-    response_model=dict,
+    response_model=QualityResponse,
     tags=["quality"],
     summary="Оценка качества по CSV-файлу с использованием EDA-ядра",
 )
@@ -197,24 +235,80 @@ async def quality_from_csv(file: UploadFile = File(...)) -> QualityResponse:
 
     start = perf_counter()
 
+    # Проверка типа файла
     if file.content_type not in ("text/csv", "application/vnd.ms-excel", "application/octet-stream"):
-        # content_type от браузера может быть разным, поэтому проверка мягкая
-        # но для демонстрации оставим простую ветку 400
-        raise HTTPException(status_code=400, detail="Ожидается CSV-файл (content-type text/csv).")
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Ожидается CSV-файл. Получен тип: {file.content_type}"
+        )
+    
+    # Проверка наличия файла
+    if not file.filename or not file.filename.endswith('.csv'):
+        raise HTTPException(
+            status_code=400, 
+            detail="Ожидается файл с расширением .csv"
+        )
+    
+    # Проверка размера файла (опционально)
+    file.file.seek(0, 2)  # Переход в конец файла
+    file_size = file.file.tell()
+    file.file.seek(0)  # Возврат в начало
+    
+    if file_size == 0:
+        raise HTTPException(
+            status_code=400, 
+            detail="Файл пуст (0 байт)"
+        )
+    
+    if file_size > 100 * 1024 * 1024:  # 100 MB лимит
+        raise HTTPException(
+            status_code=400, 
+            detail="Размер файла превышает лимит 100 MB"
+        )
 
     try:
         # FastAPI даёт file.file как file-like объект, который можно читать pandas'ом
         df = pd.read_csv(file.file)
-    except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=400, detail=f"Не удалось прочитать CSV: {exc}")
+    except pd.errors.EmptyDataError:
+        raise HTTPException(
+            status_code=400, 
+            detail="CSV-файл пуст или не содержит данных"
+        )
+    except pd.errors.ParserError as exc:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Ошибка парсинга CSV: {str(exc)}"
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Не удалось прочитать CSV файл: {str(exc)}"
+        )
 
+    # Проверка на пустой DataFrame
     if df.empty:
-        raise HTTPException(status_code=400, detail="CSV-файл не содержит данных (пустой DataFrame).")
+        raise HTTPException(
+            status_code=400, 
+            detail="CSV-файл не содержит данных (пустой DataFrame)"
+        )
+    
+    # Проверка на минимальный размер данных
+    if df.shape[0] == 0 or df.shape[1] == 0:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"CSV-файл имеет некорректные размеры: {df.shape}"
+        )
 
     # Используем EDA-ядро из S03
-    summary = summarize_dataset(df)
-    missing_df = missing_table(df)
-    flags_all = compute_quality_flags(summary, missing_df)
+    try:
+        summary = summarize_dataset(df)
+        missing_df = missing_table(df)
+        flags_all = compute_quality_flags(summary, missing_df)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Ошибка при анализе данных: {str(exc)}"
+        )
 
     # Ожидаем, что compute_quality_flags вернёт quality_score в [0,1]
     score = float(flags_all.get("quality_score", 0.0))

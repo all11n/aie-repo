@@ -1,0 +1,13 @@
+query,expected_source,retrieved_sources,rank_of_first_relevant,hit@1,recall@1,hit@3,recall@3,hit@5,recall@5,hit_at_k
+How to run background tasks after returning a response in FastAPI?,background-tasks.md,background-tasks.md | background-tasks.md | background-tasks.md | background-tasks.md | background-tasks.md,1,1,1,1,1,1,1,1
+How to structure a FastAPI application with multiple files and routers?,bigger-applications.md,bigger-applications.md | bigger-applications.md | bigger-applications.md | bigger-applications.md | bigger-applications.md,1,1,1,1,1,1,1,1
+How to declare a request body in FastAPI using Pydantic models?,body.md,body-multiple-params.md | body-multiple-params.md | body.md | header-param-models.md | header-param-models.md,3,0,0,1,1,1,1,1
+How to define nested JSON objects and lists of submodels in request body with FastAPI?,body-nested-models.md,body-nested-models.md | body-multiple-params.md | body-nested-models.md | body-nested-models.md | body-multiple-params.md,1,1,1,1,1,1,1,1
+How to implement partial updates with PATCH and exclude_unset in FastAPI?,body-updates.md,body-updates.md | body-updates.md | body-updates.md | body-updates.md | body-updates.md,1,1,1,1,1,1,1,1
+How to raise HTTPException and handle errors globally in FastAPI?,handling-errors.md,handling-errors.md | handling-errors.md | handling-errors.md | handling-errors.md | handling-errors.md,1,1,1,1,1,1,1,1
+How to declare path parameters with type hints and automatic validation in FastAPI?,path-params.md,query-param-models.md | header-param-models.md | path-params-numeric-validations.md | path-params.md | body-multiple-params.md,4,0,0,0,0,1,1,0
+How to use query parameters with default values and optional types in FastAPI?,query-params.md,query-params-str-validations.md | query-params-str-validations.md | query-params-str-validations.md | path-params-numeric-validations.md | query-params-str-validations.md,10,0,0,0,0,0,0,0
+How to enable CORS in FastAPI using CORSMiddleware to allow cross-origin requests?,cors.md,cors.md | cors.md | cors.md | cors.md | cors.md,1,1,1,1,1,1,1,1
+"How to upload files in FastAPI using File, UploadFile, and handle multiple file uploads?",request-files.md,request-files.md | request-files.md | bigger-applications.md | request-files.md | request-files.md,1,1,1,1,1,1,1,1
+How to use Pydantic models to declare and validate form fields in FastAPI?,request-form-models.md,request-form-models.md | header-param-models.md | request-form-models.md | query-param-models.md | body-nested-models.md,1,1,1,1,1,1,1,1
+How to read and declare cookie parameters with Cookie in FastAPI?,cookie-params.md,cookie-params.md | cookie-params.md | cookie-param-models.md | cookie-param-models.md | cookie-params.md,1,1,1,1,1,1,1,1

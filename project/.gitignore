@@ -1,0 +1,5 @@
+project/artifacts/*.pkl
+project/models/*.pkl
+*.pkl
+artifacts/*.pkl
+models/*.pkl

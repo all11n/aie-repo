@@ -1,0 +1,8 @@
+dataset,seed,experiment_id,model_summary,optimizer,lr,momentum,weight_decay,epochs_trained,best_val_accuracy,best_val_loss
+EMNIST,42,E1,"hidden=[512,256], no dropout, no batchnorm",Adam,0.001,,0.0,20,0.8476950354609929,0.4466363789341974
+EMNIST,42,E2,"hidden=[512,256], dropout=0.3, no batchnorm",Adam,0.001,,0.0,20,0.8576241134751773,0.42128617442246025
+EMNIST,42,E3,"hidden=[512,256], no dropout, batchnorm",Adam,0.001,,0.0,20,0.8492021276595745,0.44074152602371597
+EMNIST,42,E4,"hidden=[512,256], dropout=0.3, no batchnorm",Adam,0.001,,0.0,20,0.8613475177304964,0.4176390230232942
+EMNIST,42,O1,"hidden=[512,256], dropout=0.3, no batchnorm",Adam,0.1,,0.0,8,0.021941489361702128,3.8612182711878567
+EMNIST,42,O2,"hidden=[512,256], dropout=0.3, no batchnorm",Adam,1e-05,,0.0,8,0.5957890070921986,1.5744010977711238
+EMNIST,42,O3,"hidden=[512,256], dropout=0.3, no batchnorm",SGD,0.01,0.9,0.0001,10,0.8346631205673759,0.5037222326647305

@@ -1,0 +1,14 @@
+{
+  "model": "GRU",
+  "hidden_size": 32,
+  "window_size": 14,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "epochs": 10,
+  "seed": 42,
+  "device": "cpu",
+  "optimizer": "Adam",
+  "loss": "L1Loss",
+  "features": "raw_sequence",
+  "scaler": "None"
+}

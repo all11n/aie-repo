@@ -1,0 +1,3 @@
+﻿Модель,Accuracy,Precision,ROC-AUC,Лучшие параметры,Описание
+Dummy Classifier (most_frequent),0.59,0.0,0.5,"strategy=""most_frequent""",Всегда предсказывает класс 0 (нет дефолта)
+Logistic Regression,0.7883,0.7893,0.8754,"C=0.01, penalty=""l2""",С масштабированием и подбором параметров

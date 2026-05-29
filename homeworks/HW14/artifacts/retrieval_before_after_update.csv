@@ -1,0 +1,4 @@
+query,before_retrieved_sources,after_retrieved_sources,changed
+What response types are available in FastAPI?,path-operation-configuration.md | handling-errors.md | handling-errors.md,responses.md | path-operation-configuration.md | handling-errors.md,True
+How to use HTTP status codes in FastAPI?,path-params.md | path-params.md | first-steps.md,status-codes.md | responses.md | path-params.md,True
+What HTTP methods decorators does FastAPI provide?,path-params.md | first-steps.md | first-steps.md,path-params.md | first-steps.md | responses.md,True
